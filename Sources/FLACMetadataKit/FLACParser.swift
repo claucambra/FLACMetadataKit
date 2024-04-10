@@ -36,7 +36,7 @@ public class FLACParser {
 
         while currentData.count >= FLACMetadataBlockHeader.size {
             let headerBytes = currentData[0..<FLACMetadataBlockHeader.size]
-            let header = FLACMetadataBlockHeader(bytes: headerBytes)
+            let header = try! FLACMetadataBlockHeader(bytes: headerBytes) // TODO: Catch
             let blockEnd = FLACMetadataBlockHeader.size + Int(header.metadataBlockDataSize)
 
             guard currentData.count > blockEnd else {
