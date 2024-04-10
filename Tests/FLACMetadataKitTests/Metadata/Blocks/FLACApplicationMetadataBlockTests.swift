@@ -53,4 +53,22 @@ final class FLACApplicationMetadataBlockTests: XCTestCase {
             XCTFail("Unexpected error: \(error)")
         }
     }
+
+    func testInitializationWithInvalidDataLength() {
+        // Prepare
+        let expectedAppId = "Fail"
+        let additionalData = Data([0x05, 0x06, 0x07, 0x08])
+        var bytes = expectedAppId.data(using: .ascii)!
+        bytes.append(additionalData) // This makes bytes.count = 8
+
+        do {
+            let header = try createHeader(dataSize: 10) // Intentionally incorrect size
+            XCTAssertThrowsError(
+                try FLACApplicationMetadataBlock(bytes: bytes, header: header),
+                "Initialization should throw an error due to incorrect data size."
+            )
+        } catch {
+            XCTFail("Unexpected error during header creation: \(error)")
+        }
+    }
 }
