@@ -13,9 +13,10 @@ public struct FLACApplicationMetadataBlock {
     public let data: Data
 
     init(bytes: Data, header: FLACMetadataBlockHeader) {
+        let expectedSize = 4 + Int(header.metadataBlockDataSize)
         self.header = header
         let value = bytes[0..<4]
         appId = String(bytes: value, encoding: .ascii) ?? "\(value)"
-        data = Data(bytes[4..<Int(header.metadataBlockDataSize)])
+        data = Data(bytes[4..<expectedSize])
     }
 }
