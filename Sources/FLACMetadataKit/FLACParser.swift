@@ -54,7 +54,7 @@ public class FLACParser {
             case .padding:
                 paddings.append(FLACPaddingMetadataBlock(header: header))
             case .application:
-                application = FLACApplicationMetadataBlock(
+                application = try FLACApplicationMetadataBlock(
                     bytes: currentData, header: header
                 )
             case .seekTable:
