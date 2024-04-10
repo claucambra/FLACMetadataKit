@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FLACPaddingMetadataBlock {
+public struct FLACPaddingMetadataBlock {
     public let header: FLACMetadataBlockHeader
     public let length: UInt32  // bytes
 

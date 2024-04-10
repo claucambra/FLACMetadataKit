@@ -8,8 +8,8 @@
 import CoreGraphics
 import Foundation
 
-struct FLACPictureMetadataBlock {
-    enum PictureType: UInt32 {
+public struct FLACPictureMetadataBlock {
+    public enum PictureType: UInt32 {
         case other
         case fileIcon  // 32x32 pixels 'file icon' (PNG only)
         case otherFileIcon
@@ -34,16 +34,16 @@ struct FLACPictureMetadataBlock {
         case undefined
     }
 
-    let header: FLACMetadataBlockHeader
-    let type: PictureType
-    let mimeType: String
-    let description: String?
-    let size: CGSize
-    let colorDepth: UInt32
+    public let header: FLACMetadataBlockHeader
+    public let type: PictureType
+    public let mimeType: String
+    public let description: String?
+    public let size: CGSize
+    public let colorDepth: UInt32
     // For indexed-color pictures (e.g. GIF), number of colors used, or 0 for non-indexed pictures.
-    let colorUsed: UInt32
-    let length: UInt32
-    let data: Data
+    public let colorUsed: UInt32
+    public let length: UInt32
+    public let data: Data
 
     init(bytes: Data, header: FLACMetadataBlockHeader) {
         self.header = header

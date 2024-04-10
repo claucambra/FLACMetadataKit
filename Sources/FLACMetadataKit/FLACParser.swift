@@ -7,23 +7,22 @@
 
 import Foundation
 
-class FLACParser {
-    enum ParseError: Error {
+public class FLACParser {
+    public enum ParseError: Error {
         case dataNotFlac(String)
         case unexpectedEndError(String)
     }
 
-    let data: Data
-
-    var isFLAC: Bool {
+    public let data: Data
+    public var isFLAC: Bool {
         String(data: data[0..<4], encoding: .ascii) == FLACMetadata.streamMarker
     }
 
-    init(data: Data) {
+    public init(data: Data) {
         self.data = data
     }
 
-    func parse() throws -> FLACMetadata {
+    public func parse() throws -> FLACMetadata {
         guard isFLAC else { throw ParseError.dataNotFlac("Cannot parse data, is not a FLAC!") }
         
         var currentData = data.advanced(by: 4)

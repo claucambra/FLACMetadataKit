@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FLACApplicationMetadataBlock {
+public struct FLACApplicationMetadataBlock {
     public let header: FLACMetadataBlockHeader
     public let appId: String
     public let data: Data

@@ -9,22 +9,22 @@ import Alamofire
 import Foundation
 import OSLog
 
-class FLACRemoteMetadataFetcher {
-    let session: Alamofire.Session
-    let headers: HTTPHeaders?
-    let url: URL
+public class FLACRemoteMetadataFetcher {
+    public let session: Alamofire.Session
+    public let headers: HTTPHeaders?
+    public let url: URL
     private let queue = DispatchQueue(label: "flacRemoteMetadataFetcherQueue", qos: .userInitiated)
     private let logger = Logger(
         subsystem: "com.claucambra.FLACMetadataKit", category: "flacRemoteMetadataFetcher"
     )
 
-    init(url: URL, session: Alamofire.Session, headers: HTTPHeaders?) {
+    public init(url: URL, session: Alamofire.Session, headers: HTTPHeaders?) {
         self.url = url
         self.session = session
         self.headers = headers
     }
 
-    func fetch() async -> FLACMetadata? {
+    public func fetch() async -> FLACMetadata? {
         return await withCheckedContinuation { continuation in
             var metadata: FLACMetadata?
             var gatheredData = Data()

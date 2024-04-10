@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct FLACSeekTableMetadataBlock {
-    struct SeekPoint: Hashable {
-        static let size = 8 + 8 + 2
-        let sampleNumber: UInt64
-        let streamOffset: UInt64
-        let frameSamples: UInt16
+public struct FLACSeekTableMetadataBlock {
+    public struct SeekPoint: Hashable {
+        public static let size = 8 + 8 + 2
+        public let sampleNumber: UInt64
+        public let streamOffset: UInt64
+        public let frameSamples: UInt16
 
         init(bytes: Data) {
             sampleNumber = bytes[0..<8].withUnsafeBytes { $0.load(as: UInt64.self).bigEndian }
@@ -21,8 +21,8 @@ struct FLACSeekTableMetadataBlock {
         }
     }
 
-    let header: FLACMetadataBlockHeader
-    let points: [SeekPoint]
+    public let header: FLACMetadataBlockHeader
+    public let points: [SeekPoint]
 
     init(bytes: Data, header: FLACMetadataBlockHeader) {
         self.header = header

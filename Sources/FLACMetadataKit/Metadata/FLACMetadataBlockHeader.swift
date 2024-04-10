@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct FLACMetadataBlockHeader {
-    enum MetadataBlockType: UInt8 {
+public struct FLACMetadataBlockHeader {
+    public enum MetadataBlockType: UInt8 {
         case streamInfo
         case padding
         case application
@@ -33,9 +33,9 @@ struct FLACMetadataBlockHeader {
     }
 
     static let size = 4  // Bytes
-    let isLastMetadataBlock: Bool
-    let metadataBlockType: MetadataBlockType
-    let metadataBlockDataSize: UInt32
+    public let isLastMetadataBlock: Bool
+    public let metadataBlockType: MetadataBlockType
+    public let metadataBlockDataSize: UInt32
 
     init(bytes: Data) {
         isLastMetadataBlock = (bytes[0] & 0x80) != 0  // Check largest bit of byte

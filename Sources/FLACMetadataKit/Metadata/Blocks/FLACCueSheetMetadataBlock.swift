@@ -7,28 +7,28 @@
 
 import Foundation
 
-struct FLACCueSheetMetadataBlock {
-    struct Track {
-        struct Index {
-            static let size = 8 + 1 + 3
-            let offset: UInt64
-            let number: UInt8
+public struct FLACCueSheetMetadataBlock {
+    public struct Track {
+        public struct Index {
+            public static let size = 8 + 1 + 3
+            public let offset: UInt64
+            public let number: UInt8
         }
 
-        let offset: UInt64
-        let number: UInt8
-        let isrc: String
-        let isAudio: Bool
-        let isPreEmphasis: Bool
-        let numberOfIndexPoints: UInt8
-        let indexPoints: [Index]
+        public let offset: UInt64
+        public let number: UInt8
+        public let isrc: String
+        public let isAudio: Bool
+        public let isPreEmphasis: Bool
+        public let numberOfIndexPoints: UInt8
+        public let indexPoints: [Index]
     }
 
-    let header: FLACMetadataBlockHeader
-    let mediaCatalogNumber: String
-    let leadInSamples: UInt64
-    let isCD: Bool
-    let tracks: [Track]
+    public let header: FLACMetadataBlockHeader
+    public let mediaCatalogNumber: String
+    public let leadInSamples: UInt64
+    public let isCD: Bool
+    public let tracks: [Track]
 
     init(bytes: Data, header: FLACMetadataBlockHeader) {
         self.header = header

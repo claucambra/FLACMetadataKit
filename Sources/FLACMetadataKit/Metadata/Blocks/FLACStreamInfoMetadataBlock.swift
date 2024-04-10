@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct FLACStreamInfoMetadataBlock {
-    let header: FLACMetadataBlockHeader
-    let minimumBlockSize: UInt16
-    let maximumBlockSize: UInt16
-    let minimumFrameSize: UInt32
-    let maximumFrameSize: UInt32
-    let sampleRate: UInt32
-    let channels: UInt32
-    let bitsPerSample: UInt32
-    let totalSamples: UInt64
-    let md5: String
+public struct FLACStreamInfoMetadataBlock {
+    public let header: FLACMetadataBlockHeader
+    public let minimumBlockSize: UInt16
+    public let maximumBlockSize: UInt16
+    public let minimumFrameSize: UInt32
+    public let maximumFrameSize: UInt32
+    public let sampleRate: UInt32
+    public let channels: UInt32
+    public let bitsPerSample: UInt32
+    public let totalSamples: UInt64
+    public let md5: String
 
     init(bytes: Data, header: FLACMetadataBlockHeader) {
         self.header = header

@@ -8,8 +8,8 @@
 import Foundation
 import OSLog
 
-struct FLACVorbisCommentsMetadataBlock {
-    enum Field: String {
+public struct FLACVorbisCommentsMetadataBlock {
+    public enum Field: String {
         case title = "TITLE"
         case version = "VERSION"
         case album = "ALBUM"
@@ -35,9 +35,9 @@ struct FLACVorbisCommentsMetadataBlock {
         case barcode = "BARCODE"
     }
 
-    let header: FLACMetadataBlockHeader
-    let vendor: String
-    let metadata: [Field: String]
+    public let header: FLACMetadataBlockHeader
+    public let vendor: String
+    public let metadata: [Field: String]
     private let logger = Logger(
         subsystem: "com.claucambra.FLACMetadataKit", category: "flacVorbisComments"
     )
