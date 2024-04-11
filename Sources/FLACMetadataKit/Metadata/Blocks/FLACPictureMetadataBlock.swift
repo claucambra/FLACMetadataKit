@@ -36,7 +36,23 @@ public struct FLACPictureMetadataBlock {
 
     // Pic type, MIME type string length, description length, width, height, color depth,
     // color used, data length
-    static public let minSize = 4 + 4 + 4 + 4 + 4 + 4 + 4 + 4
+    static let picTypeSize = 4
+    static let mimeTypeStringLengthSize = 4
+    static let descriptionLengthSize = 4
+    static let widthSize = 4
+    static let heightSize = 4
+    static let colorDepthSize = 4
+    static let colorUsedSize = 4
+    static let lengthSize = 4
+
+    static public let minSize = picTypeSize + 
+                                mimeTypeStringLengthSize +
+                                descriptionLengthSize +
+                                widthSize +
+                                heightSize +
+                                colorDepthSize +
+                                colorUsedSize +
+                                lengthSize
     public let header: FLACMetadataBlockHeader
     public let type: PictureType
     public let mimeType: String
@@ -68,13 +84,38 @@ public struct FLACPictureMetadataBlock {
         })
         advancedBytes = advancedBytes.advanced(by: 4)
 
+        guard advancedBytes.count >= mimeTypeLength +
+                                     FLACPictureMetadataBlock.descriptionLengthSize +
+                                     FLACPictureMetadataBlock.widthSize +
+                                     FLACPictureMetadataBlock.heightSize +
+                                     FLACPictureMetadataBlock.colorDepthSize +
+                                     FLACPictureMetadataBlock.colorUsedSize +
+                                     FLACPictureMetadataBlock.lengthSize
+        else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse picture metadata block, encountered missing mime type data!"
+            )
+        }
+
         mimeType = String(bytes: advancedBytes[0..<mimeTypeLength], encoding: .ascii) ?? ""
         advancedBytes = advancedBytes.advanced(by: mimeTypeLength)
 
-        let descriptionLength = advancedBytes[0..<4].withUnsafeBytes {
+        let descriptionLength = Int(advancedBytes[0..<4].withUnsafeBytes {
             $0.load(as: UInt32.self).bigEndian
-        }
+        })
         advancedBytes = advancedBytes.advanced(by: 4)
+
+        guard advancedBytes.count >= descriptionLength +
+                                     FLACPictureMetadataBlock.widthSize +
+                                     FLACPictureMetadataBlock.heightSize +
+                                     FLACPictureMetadataBlock.colorDepthSize +
+                                     FLACPictureMetadataBlock.colorUsedSize +
+                                     FLACPictureMetadataBlock.lengthSize
+        else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse picture metadata block, encountered missing description data!"
+            )
+        }
 
         if descriptionLength > 0 {
             description = String(bytes: advancedBytes[0..<descriptionLength], encoding: .utf8)
@@ -109,6 +150,12 @@ public struct FLACPictureMetadataBlock {
             $0.load(as: UInt32.self).bigEndian
         }
         advancedBytes = advancedBytes.advanced(by: 4)
+
+        guard advancedBytes.count == length else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse picture metadata block, encountered missing picture data!"
+            )
+        }
 
         data = advancedBytes[0..<length]
     }
