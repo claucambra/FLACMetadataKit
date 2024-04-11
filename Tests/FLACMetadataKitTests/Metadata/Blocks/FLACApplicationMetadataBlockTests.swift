@@ -6,32 +6,10 @@
 //
 
 import XCTest
+@testable import TestCommon
 @testable import FLACMetadataKit
 
 final class FLACApplicationMetadataBlockTests: XCTestCase {
-
-    // Helper method to create a FLACMetadataBlockHeader safely
-    func createHeader(
-        isLast: Bool = false,
-        type: FLACMetadataBlockHeader.MetadataBlockType = .application,
-        dataSize: UInt32
-    ) throws -> FLACMetadataBlockHeader {
-        // First byte combines the isLast flag and the type.
-        let firstByte: UInt8 = (isLast ? 0x80 : 0x00) | type.rawValue
-        // Next three bytes represent the dataSize in big endian format.
-        let sizeBytes: [UInt8] = [
-            UInt8((dataSize >> 16) & 0xFF),
-            UInt8((dataSize >> 8) & 0xFF),
-            UInt8(dataSize & 0xFF)
-        ]
-        // Combine to form the header bytes.
-        var headerBytes = Data([firstByte])
-        headerBytes.append(contentsOf: sizeBytes)
-
-        // Attempt to create a FLACMetadataBlockHeader with the assembled bytes.
-        return try FLACMetadataBlockHeader(bytes: headerBytes)
-    }
-
 
     func testInitializationWithValidData() {
         let expectedAppId = "Test" // AppId of 4 bytes
@@ -45,7 +23,7 @@ final class FLACApplicationMetadataBlockTests: XCTestCase {
         let totalDataSize = UInt32(additionalData.count)
 
         do {
-            let header = try createHeader(isLast: false, type: .application, dataSize: totalDataSize)
+            let header = try mockHeader(isLast: false, type: .application, dataSize: totalDataSize)
             let block = try FLACApplicationMetadataBlock(bytes: bytes, header: header)
             XCTAssertEqual(block.appId, expectedAppId, "AppId should match the expected value.")
             XCTAssertEqual(block.data, additionalData, "Data should match the additional data provided.")
@@ -62,7 +40,8 @@ final class FLACApplicationMetadataBlockTests: XCTestCase {
         bytes.append(additionalData) // This makes bytes.count = 8
 
         do {
-            let header = try createHeader(dataSize: 10) // Intentionally incorrect size
+            // Intentionally incorrect size
+            let header = try mockHeader(isLast: false, type: .application, dataSize: 10)
             XCTAssertThrowsError(
                 try FLACApplicationMetadataBlock(bytes: bytes, header: header),
                 "Initialization should throw an error due to incorrect data size."

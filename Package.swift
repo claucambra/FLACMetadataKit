@@ -27,8 +27,12 @@ let package = Package(
         .target(
             name: "FLACMetadataKit",
             dependencies: ["Alamofire"]),
+        .target(
+            name: "TestCommon",
+            dependencies: ["FLACMetadataKit"],
+            path: "Tests/Common"),
         .testTarget(
             name: "FLACMetadataKitTests",
-            dependencies: ["FLACMetadataKit"]),
+            dependencies: ["TestCommon", "FLACMetadataKit"]),
     ]
 )

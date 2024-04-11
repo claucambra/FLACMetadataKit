@@ -6,28 +6,10 @@
 //
 
 import XCTest
+@testable import TestCommon
 @testable import FLACMetadataKit
 
 final class FLACPictureMetadataBlockTests: XCTestCase {
-
-    private func mockHeader(
-        isLast: Bool,
-        type: FLACMetadataBlockHeader.MetadataBlockType,
-        dataSize: UInt32
-    ) -> Data {
-        var firstByte: UInt8 = type.rawValue
-        if isLast {
-            firstByte |= 0x80 // Indicating this is the last metadata block
-        }
-        var headerData = Data([firstByte])
-        // Ensure the dataSize is a 24-bit big-endian integer
-        headerData.append(contentsOf: [
-            UInt8((dataSize >> 16) & 0xFF),
-            UInt8((dataSize >> 8) & 0xFF),
-            UInt8(dataSize & 0xFF)
-        ])
-        return headerData
-    }
 
     func testInitializationWithValidData() {
         let type = FLACPictureMetadataBlock.PictureType.frontCover.rawValue
@@ -47,9 +29,8 @@ final class FLACPictureMetadataBlockTests: XCTestCase {
         data.append(contentsOf: withUnsafeBytes(of: UInt32(imageData.count).bigEndian, Array.init))
         data.append(imageData)
 
-        let headerData = mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
         do {
-            let header = try FLACMetadataBlockHeader(bytes: headerData)
+            let header = try mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
             let pictureBlock = try FLACPictureMetadataBlock(bytes: data, header: header)
 
             XCTAssertEqual(pictureBlock.type.rawValue, type)
@@ -64,10 +45,9 @@ final class FLACPictureMetadataBlockTests: XCTestCase {
     func testInitializationWithInvalidData() {
         // Simulating an attempt to initialize with insufficient data
         let data = Data([0x00, 0x01, 0x02]) // Insufficient for any valid picture metadata
-        let headerData = mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
 
         do {
-            let header = try FLACMetadataBlockHeader(bytes: headerData)
+            let header = try mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
             XCTAssertThrowsError(try FLACPictureMetadataBlock(bytes: data, header: header))
         } catch {
             XCTFail("Initialization should not succeed with invalid data.")
@@ -96,9 +76,8 @@ final class FLACPictureMetadataBlockTests: XCTestCase {
         data.append(contentsOf: withUnsafeBytes(of: UInt32(10).bigEndian, Array.init))
         data.append(imageData)
 
-        let headerData = mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
         do {
-            let header = try FLACMetadataBlockHeader(bytes: headerData)
+            let header = try mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
             XCTAssertThrowsError(try FLACPictureMetadataBlock(bytes: data, header: header))
         } catch {
             XCTFail("Failed with error: \(error)")
@@ -124,9 +103,8 @@ final class FLACPictureMetadataBlockTests: XCTestCase {
         data.append(contentsOf: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 24, 0, 0, 0, 0])
         data.append(contentsOf: withUnsafeBytes(of: UInt32(0).bigEndian, Array.init))
 
-        let headerData = mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
         do {
-            let header = try FLACMetadataBlockHeader(bytes: headerData)
+            let header = try mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
             XCTAssertThrowsError(try FLACPictureMetadataBlock(bytes: data, header: header))
         } catch {
             XCTFail("Failed with error: \(error)")
@@ -149,9 +127,8 @@ final class FLACPictureMetadataBlockTests: XCTestCase {
         data.append(contentsOf: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 24, 0, 0, 0, 0])
         data.append(contentsOf: withUnsafeBytes(of: UInt32(0).bigEndian, Array.init))
 
-        let headerData = mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
         do {
-            let header = try FLACMetadataBlockHeader(bytes: headerData)
+            let header = try mockHeader(isLast: false, type: .picture, dataSize: UInt32(data.count))
             XCTAssertThrowsError(try FLACPictureMetadataBlock(bytes: data, header: header))
         } catch {
             XCTFail("Failed with error: \(error)")

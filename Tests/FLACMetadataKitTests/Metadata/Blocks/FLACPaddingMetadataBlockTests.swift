@@ -6,30 +6,10 @@
 //
 
 import XCTest
+@testable import TestCommon
 @testable import FLACMetadataKit
 
 final class FLACPaddingMetadataBlockTests: XCTestCase {
-
-    private func mockHeader(
-        isLast: Bool,
-        type: FLACMetadataBlockHeader.MetadataBlockType,
-        dataSize: UInt32
-    ) throws -> FLACMetadataBlockHeader {
-            var firstByte = type.rawValue
-            if isLast {
-                firstByte |= 0x80 // Set the last-metadata-block flag
-            }
-            var data = Data([firstByte])
-
-            // Ensure dataSize is properly represented in the next three bytes
-            data.append(contentsOf: [
-                UInt8((dataSize >> 16) & 0xFF),
-                UInt8((dataSize >> 8) & 0xFF),
-                UInt8(dataSize & 0xFF)
-            ])
-
-            return try FLACMetadataBlockHeader(bytes: data)
-        }
 
     func testInitializationWithValidHeader() {
         let dataSize: UInt32 = 1024
