@@ -8,6 +8,8 @@
 import Foundation
 
 public struct FLACStreamInfoMetadataBlock {
+    // The 8 bytes is for 3 bits of channel info, 5 bits of the sample, 36 bits of total samples
+    static public let size = 2 + 2 + 3 + 3 + 8 + 16
     public let header: FLACMetadataBlockHeader
     public let minimumBlockSize: UInt16
     public let maximumBlockSize: UInt16
@@ -19,7 +21,12 @@ public struct FLACStreamInfoMetadataBlock {
     public let totalSamples: UInt64
     public let md5: String
 
-    init(bytes: Data, header: FLACMetadataBlockHeader) {
+    init(bytes: Data, header: FLACMetadataBlockHeader) throws {
+        guard bytes.count == FLACStreamInfoMetadataBlock.size else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse stream info metadata block, unexpected data size!"
+            )
+        }
         self.header = header
 
         var advancedBytes = bytes.advanced(by: 0)

@@ -48,7 +48,7 @@ public class FLACParser {
 
             switch header.metadataBlockType {
             case .streamInfo:
-                streamInfo = FLACStreamInfoMetadataBlock(
+                streamInfo = try FLACStreamInfoMetadataBlock(
                     bytes: currentData, header: header
                 )
             case .padding:
