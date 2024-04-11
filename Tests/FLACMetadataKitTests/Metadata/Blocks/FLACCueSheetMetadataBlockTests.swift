@@ -66,7 +66,7 @@ final class FLACCueSheetMetadataBlockTests: XCTestCase {
             let header = try mockHeader(
                 isLast: false, type: .cueSheet, dataSize: UInt32(bytes.count)
             )
-            let cueSheetBlock = FLACCueSheetMetadataBlock(bytes: bytes, header: header)
+            let cueSheetBlock = try FLACCueSheetMetadataBlock(bytes: bytes, header: header)
 
             XCTAssertEqual(cueSheetBlock.mediaCatalogNumber, mediaCatalogNumber)
             XCTAssertEqual(cueSheetBlock.leadInSamples, leadInSamples)

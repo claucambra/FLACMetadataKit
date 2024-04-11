@@ -24,13 +24,20 @@ public struct FLACCueSheetMetadataBlock {
         public let indexPoints: [Index]
     }
 
+    // Media catalog number + lead-in samples + reserved bits + number of tracks
+    static let minSize = 8 + 1 + 258 + 1 + 1
     public let header: FLACMetadataBlockHeader
     public let mediaCatalogNumber: String
     public let leadInSamples: UInt64
     public let isCD: Bool
     public let tracks: [Track]
 
-    init(bytes: Data, header: FLACMetadataBlockHeader) {
+    init(bytes: Data, header: FLACMetadataBlockHeader) throws {
+        guard bytes.count >= FLACCueSheetMetadataBlock.minSize else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse cuedata metadata block, unexpected data size!"
+            )
+        }
         self.header = header
 
         var advancedBytes = bytes.advanced(by: 0)
