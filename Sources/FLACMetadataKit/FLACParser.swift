@@ -66,7 +66,7 @@ public class FLACParser {
             case .cueSheet:
                 cueSheet = try FLACCueSheetMetadataBlock(bytes: currentData, header: header)
             case .picture:
-                picture = FLACPictureMetadataBlock(bytes: currentData, header: header)
+                picture = try FLACPictureMetadataBlock(bytes: currentData, header: header)
             case .reserved, .invalid, .undefined:
                 print("Nothing to do")
             }

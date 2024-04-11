@@ -34,6 +34,9 @@ public struct FLACPictureMetadataBlock {
         case undefined
     }
 
+    // Pic type, MIME type string length, description length, width, height, color depth,
+    // color used, data length
+    static public let minSize = 4 + 4 + 4 + 4 + 4 + 4 + 4 + 4
     public let header: FLACMetadataBlockHeader
     public let type: PictureType
     public let mimeType: String
@@ -45,7 +48,12 @@ public struct FLACPictureMetadataBlock {
     public let length: UInt32
     public let data: Data
 
-    init(bytes: Data, header: FLACMetadataBlockHeader) {
+    init(bytes: Data, header: FLACMetadataBlockHeader) throws {
+        guard bytes.count >= FLACPictureMetadataBlock.minSize else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse picture metadata block, unexpected data size!"
+            )
+        }
         self.header = header
 
         var advancedBytes = bytes.advanced(by: 0)
