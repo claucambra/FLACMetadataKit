@@ -25,8 +25,8 @@ public struct FLACCueSheetMetadataBlock {
         public let indexPoints: [Index]
     }
 
-    // Media catalog number + lead-in samples + reserved bits + number of tracks
-    static let minSize = 8 + 1 + 258 + 1 + 1
+    // Media catalog number + lead-in samples + isCD flag + reserved bits + number of tracks
+    static let minSize = 128 + 8 + 1 + 258 + 1 + 1
     public let header: FLACMetadataBlockHeader
     public let mediaCatalogNumber: String
     public let leadInSamples: UInt64
