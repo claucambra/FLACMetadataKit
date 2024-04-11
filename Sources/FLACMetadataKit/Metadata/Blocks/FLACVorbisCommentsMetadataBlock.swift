@@ -35,6 +35,10 @@ public struct FLACVorbisCommentsMetadataBlock {
         case barcode = "BARCODE"
     }
 
+    static let vendorLengthSize = 4
+    static let commentCountSize = 4
+    static let commentLengthSize = 4
+
     public let header: FLACMetadataBlockHeader
     public let vendor: String
     public let metadata: [Field: String]
@@ -42,7 +46,14 @@ public struct FLACVorbisCommentsMetadataBlock {
         subsystem: "com.claucambra.FLACMetadataKit", category: "flacVorbisComments"
     )
 
-    init(bytes: Data, header: FLACMetadataBlockHeader) {
+    init(bytes: Data, header: FLACMetadataBlockHeader) throws {
+        guard bytes.count >= FLACVorbisCommentsMetadataBlock.vendorLengthSize +
+                             FLACVorbisCommentsMetadataBlock.commentCountSize
+        else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse vorbis comments, not enough data!"
+            )
+        }
         var advancedBytes = bytes.advanced(by: 0)
         self.header = header
 
@@ -50,6 +61,13 @@ public struct FLACVorbisCommentsMetadataBlock {
             $0.load(as: UInt32.self).littleEndian
         })
         advancedBytes = advancedBytes.advanced(by: 4)
+
+        guard advancedBytes.count >= vendorLength + FLACVorbisCommentsMetadataBlock.commentCountSize
+        else {
+            throw FLACParser.ParseError.unexpectedEndError(
+                "Cannot parse vorbis comments, not enough data for vendor length!"
+            )
+        }
 
         vendor = String(bytes: advancedBytes[0..<vendorLength], encoding: .utf8) ?? ""
         advancedBytes = advancedBytes.advanced(by: vendorLength)
@@ -61,10 +79,22 @@ public struct FLACVorbisCommentsMetadataBlock {
 
         var processedMetadata: [Field: String] = [:]
         for _ in 0..<commentCount {
+            guard advancedBytes.count >= FLACVorbisCommentsMetadataBlock.commentLengthSize else {
+                throw FLACParser.ParseError.unexpectedEndError(
+                    "Cannot parse vorbis comments, not enough data for comment length!"
+                )
+            }
+
             let commentLength = Int(advancedBytes[0..<4].withUnsafeBytes {
                 $0.load(as: UInt32.self).littleEndian
             })
             advancedBytes = advancedBytes.advanced(by: 4)
+
+            guard advancedBytes.count >= commentLength else {
+                throw FLACParser.ParseError.unexpectedEndError(
+                    "Cannot parse vorbis comments, not enough data for comment!"
+                )
+            }
 
             let valueBytes = advancedBytes[0..<commentLength]
             guard let value = String(bytes: valueBytes, encoding: .utf8) else {
