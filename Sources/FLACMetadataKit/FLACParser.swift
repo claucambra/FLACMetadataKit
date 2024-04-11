@@ -45,28 +45,29 @@ public class FLACParser {
             }
             
             currentData = currentData.advanced(by: FLACMetadataBlockHeader.size)
+            let blockBytes = currentData[0..<header.metadataBlockDataSize]
 
             switch header.metadataBlockType {
             case .streamInfo:
                 streamInfo = try FLACStreamInfoMetadataBlock(
-                    bytes: currentData, header: header
+                    bytes: blockBytes, header: header
                 )
             case .padding:
                 paddings.append(FLACPaddingMetadataBlock(header: header))
             case .application:
                 application = try FLACApplicationMetadataBlock(
-                    bytes: currentData, header: header
+                    bytes: blockBytes, header: header
                 )
             case .seekTable:
-                seekTable = try FLACSeekTableMetadataBlock(bytes: currentData, header: header)
+                seekTable = try FLACSeekTableMetadataBlock(bytes: blockBytes, header: header)
             case .vorbisComment:
                 vorbisComments = try FLACVorbisCommentsMetadataBlock(
-                    bytes: currentData, header: header
+                    bytes: blockBytes, header: header
                 )
             case .cueSheet:
-                cueSheet = try FLACCueSheetMetadataBlock(bytes: currentData, header: header)
+                cueSheet = try FLACCueSheetMetadataBlock(bytes: blockBytes, header: header)
             case .picture:
-                picture = try FLACPictureMetadataBlock(bytes: currentData, header: header)
+                picture = try FLACPictureMetadataBlock(bytes: blockBytes, header: header)
             case .reserved, .invalid, .undefined:
                 print("Nothing to do")
             }
