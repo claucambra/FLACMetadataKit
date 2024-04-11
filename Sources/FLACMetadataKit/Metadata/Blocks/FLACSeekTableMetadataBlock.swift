@@ -24,13 +24,18 @@ public struct FLACSeekTableMetadataBlock {
     public let header: FLACMetadataBlockHeader
     public let points: [SeekPoint]
 
-    init(bytes: Data, header: FLACMetadataBlockHeader) {
+    init(bytes: Data, header: FLACMetadataBlockHeader) throws {
         self.header = header
 
         var advancedBytes = bytes.advanced(by: 0)
         let pointCount = Int(header.metadataBlockDataSize) / SeekPoint.size
         var pointTable: [SeekPoint] = []
         for _ in 0..<pointCount {
+            guard advancedBytes.count >= SeekPoint.size else {
+                throw FLACParser.ParseError.unexpectedEndError(
+                    "Cannot parse seek table metadata block seek point, unexpected data size!"
+                )
+            }
             let point = SeekPoint(bytes: bytes[0..<SeekPoint.size])
             advancedBytes = advancedBytes.advanced(by: SeekPoint.size)
             pointTable.append(point)

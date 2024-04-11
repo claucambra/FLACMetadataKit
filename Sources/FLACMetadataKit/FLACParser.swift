@@ -58,7 +58,7 @@ public class FLACParser {
                     bytes: currentData, header: header
                 )
             case .seekTable:
-                seekTable = FLACSeekTableMetadataBlock(bytes: currentData, header: header)
+                seekTable = try FLACSeekTableMetadataBlock(bytes: currentData, header: header)
             case .vorbisComment:
                 vorbisComments = FLACVorbisCommentsMetadataBlock(
                     bytes: currentData, header: header
