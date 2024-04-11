@@ -57,6 +57,11 @@ public struct FLACCueSheetMetadataBlock {
 
         var processedTracks: [Track] = []
         for _ in 0..<numberOfTracks {
+            guard advancedBytes.count > 0 else {
+                throw FLACParser.ParseError.unexpectedEndError(
+                    "Cannot parse cue data track data, unexpected end!"
+                )
+            }
             let trackOffsetInSamples = advancedBytes[0..<8].withUnsafeBytes {
                 $0.load(as: UInt64.self).bigEndian
             }
