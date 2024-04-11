@@ -15,6 +15,7 @@ public struct FLACCueSheetMetadataBlock {
             public let number: UInt8
         }
 
+        static let minSize = 8 + 1 + 12 + 14 + 1
         public let offset: UInt64
         public let number: UInt8
         public let isrc: String
@@ -57,7 +58,7 @@ public struct FLACCueSheetMetadataBlock {
 
         var processedTracks: [Track] = []
         for _ in 0..<numberOfTracks {
-            guard advancedBytes.count > 0 else {
+            guard advancedBytes.count >= Track.minSize else {
                 throw FLACParser.ParseError.unexpectedEndError(
                     "Cannot parse cue data track data, unexpected end!"
                 )
@@ -83,6 +84,11 @@ public struct FLACCueSheetMetadataBlock {
 
             var indexPoints: [Track.Index] = []
             for _ in 0..<numberOfIndexPoints {
+                guard advancedBytes.count == Track.Index.size else {
+                    throw FLACParser.ParseError.unexpectedEndError(
+                        "Cannot parse cue data track index point data, unexpected end!"
+                    )
+                }
                 let indexPointData = advancedBytes[0..<Track.Index.size]
                 advancedBytes = advancedBytes.advanced(by: Track.Index.size)
 
