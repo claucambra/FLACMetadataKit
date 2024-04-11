@@ -114,4 +114,25 @@ final class FLACCueSheetMetadataBlockTests: XCTestCase {
         }
     }
 
+    func testInitializationWithInvalidData() {
+        let invalidMediaCatalogNumber = String(repeating: "a", count: 127) // One character short
+        let leadInSamples: UInt64 = 88200 // Correctly formed
+        let isCD = true // Correctly formed
+
+        // Constructing bytes with the invalid media catalog number
+        let bytes = invalidMediaCatalogNumber.data(using: .ascii)! +
+                    withUnsafeBytes(of: leadInSamples.bigEndian) { Data($0) } +
+                    Data([UInt8(isCD ? 0x80 : 0)]) +
+                    Data(repeating: 1, count: 258) +
+                    Data([UInt8(0)])
+
+        do {
+            let header = try mockHeader(
+                isLast: false, type: .cueSheet, dataSize: UInt32(bytes.count)
+            )
+            XCTAssertThrowsError(try FLACCueSheetMetadataBlock(bytes: bytes, header: header))
+        } catch {
+            XCTFail("Failed to initialize FLACMetadataBlockHeader with error: \(error)")
+        }
+    }
 }
