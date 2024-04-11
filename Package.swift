@@ -33,6 +33,9 @@ let package = Package(
             path: "Tests/Common"),
         .testTarget(
             name: "FLACMetadataKitTests",
-            dependencies: ["TestCommon", "FLACMetadataKit"]),
+            dependencies: ["TestCommon", "FLACMetadataKit"],
+            resources: [
+                .process("Resources"),
+              ]),
     ]
 )
