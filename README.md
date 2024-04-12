@@ -23,10 +23,12 @@ Usage
 
 ### Parsing Local FLAC Files
 
-```
+```swift
 import FLACMetadataKit
+
 let flacData = Data(contentsOf: URL(fileURLWithPath: "path/to/your/file.flac"))
 let parser = FLACParser(data: flacData)
+
 do {
     let metadata = try parser.parse()
     print("Parsed metadata successfully: \(metadata)")
@@ -37,13 +39,14 @@ do {
 
 ### Streaming FLAC Metadata from the Internet
 
-```
+```swift
 import FLACMetadataKit
 import Alamofire
 
 let url = URL(string: "http://example.com/file.flac")!
 let session = Alamofire.Session.default
 let fetcher = FLACRemoteMetadataFetcher(url: url, session: session, headers: nil)
+
 Task {
     if let metadata = await fetcher.fetch() {
         print("Successfully fetched and parsed metadata: \(metadata)")
