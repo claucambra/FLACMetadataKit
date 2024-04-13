@@ -7,7 +7,7 @@ Features
 --------
 
 *   **Local Parsing:** Parse FLAC metadata directly from local files.
-*   **Streaming Parsing:** Fetch and parse metadata progressively from remote FLAC files.
+*   **Streaming Parsing:** Fetch and parse metadata progressively from remote FLAC files without needing to download the entire file.
 *   **Support for Multiple Metadata Types:** Handles various types of metadata including StreamInfo, Vorbis Comments, Cue Sheets, Pictures, and more.
 *   **Error Handling:** Handles parsing issues like incomplete data or non-FLAC content.
 
