@@ -50,4 +50,21 @@ final class FLACApplicationMetadataBlockTests: XCTestCase {
             XCTFail("Unexpected error during header creation: \(error)")
         }
     }
+
+    func testInitializationWithInvalidAppId() {
+        // Prepare
+        let expectedAppId = "No"
+        var bytes = expectedAppId.data(using: .ascii)!
+
+        do {
+            // Intentionally incorrect size
+            let header = try mockHeader(isLast: false, type: .application, dataSize: 10)
+            XCTAssertThrowsError(
+                try FLACApplicationMetadataBlock(bytes: bytes, header: header),
+                "Initialization should throw an error due to bad app ID."
+            )
+        } catch {
+            XCTFail("Unexpected error during header creation: \(error)")
+        }
+    }
 }

@@ -14,7 +14,7 @@ public struct FLACApplicationMetadataBlock {
 
     init(bytes: Data, header: FLACMetadataBlockHeader) throws {
         let expectedSize = Int(header.metadataBlockDataSize)
-        guard bytes.count == expectedSize else {
+        guard bytes.count > 4, bytes.count == expectedSize else { // Must at least have appId
             throw FLACParser.ParseError.unexpectedEndError(
                 """
                 Cannot parse application metadata block, unexpected data size!
