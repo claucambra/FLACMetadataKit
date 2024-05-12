@@ -13,7 +13,7 @@ public struct FLACApplicationMetadataBlock {
     public let data: Data
 
     init(bytes: Data, header: FLACMetadataBlockHeader) throws {
-        let expectedSize = 4 + Int(header.metadataBlockDataSize)
+        let expectedSize = Int(header.metadataBlockDataSize)
         guard bytes.count == expectedSize else {
             throw FLACParser.ParseError.unexpectedEndError(
                 """

@@ -20,7 +20,7 @@ final class FLACApplicationMetadataBlockTests: XCTestCase {
         // Correctly setting the total data size in the header
         // The total data size is simply the length of additionalData in this setup,
         // as the appId size (4 bytes) is implicitly understood to be separate.
-        let totalDataSize = UInt32(additionalData.count)
+        let totalDataSize = UInt32(expectedAppId.count + additionalData.count)
 
         do {
             let header = try mockHeader(isLast: false, type: .application, dataSize: totalDataSize)
