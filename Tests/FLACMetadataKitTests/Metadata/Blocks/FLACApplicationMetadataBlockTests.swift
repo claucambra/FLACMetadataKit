@@ -54,7 +54,7 @@ final class FLACApplicationMetadataBlockTests: XCTestCase {
     func testInitializationWithInvalidAppId() {
         // Prepare
         let expectedAppId = "No"
-        var bytes = expectedAppId.data(using: .ascii)!
+        let bytes = expectedAppId.data(using: .ascii)!
 
         do {
             // Intentionally incorrect size
